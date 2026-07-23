@@ -1,0 +1,28 @@
+<div class="thead row">
+  <span>Tracking #</span>
+  <span>Status</span>
+  <span>Route</span>
+  <span>Customer</span>
+  <span>Carrier</span>
+  <span class="right">Weight</span>
+  <span class="right">ETA</span>
+  <span>Progress</span>
+</div>
+
+<cdk-virtual-scroll-viewport itemSize="46" minBufferPx="400" maxBufferPx="800" class="viewport">
+  <div class="row body" *cdkVirtualFor="let s of shipments(); trackBy: trackById">
+    <span class="num id">{{ s.id }}</span>
+    <span><app-status-badge [status]="s.status" /></span>
+    <span class="route">
+      {{ s.origin }} <span class="arrow">➜</span> {{ s.destination }}
+    </span>
+    <span class="dim">{{ s.customer }}</span>
+    <span class="dim">{{ s.carrier }}</span>
+    <span class="num right">{{ s.weightKg | number: '1.1-1' }} kg</span>
+    <span class="num right eta">{{ etaLabel(s.etaMinutes) }}</span>
+    <span class="progress">
+      <span class="bar"><span class="fill" [style.width.%]="s.progressPct"></span></span>
+      <span class="num pct">{{ s.progressPct }}%</span>
+    </span>
+  </div>
+</cdk-virtual-scroll-viewport>

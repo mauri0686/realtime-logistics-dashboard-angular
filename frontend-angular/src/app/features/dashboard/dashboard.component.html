@@ -1,0 +1,42 @@
+<div class="page">
+  <header class="topbar panel">
+    <div class="brand">
+      <span class="logo">⬢</span>
+      <div>
+        <h1>ShipTrack <span>Ops</span></h1>
+        <p>Realtime logistics control tower</p>
+      </div>
+    </div>
+
+    <div class="live">
+      <span class="dot" [class.on]="status() === 'live'"></span>
+      <span class="label">{{ status() | uppercase }}</span>
+      <span class="rate num">{{ updatesPerSec() }} upd/s</span>
+    </div>
+
+    <div class="user">
+      <span>{{ username() }}</span>
+      <button type="button" (click)="logout()">Sign out</button>
+    </div>
+  </header>
+
+  <app-kpi-cards [kpis]="kpis()" />
+
+  <section class="panel toolbar">
+    <input
+      type="search"
+      [formControl]="searchControl"
+      placeholder="Search tracking #, customer, city, carrier…"
+      aria-label="Search shipments"
+    />
+    <select [formControl]="statusControl" aria-label="Filter by status">
+      <option value="All">All statuses</option>
+      @for (s of statuses; track s) {
+        <option [value]="s">{{ s }}</option>
+      }
+    </select>
+    <span class="count num">{{ filtered().length }} shipments</span>
+  </section>
+
+  <app-shipments-table class="panel table-host" [shipments]="filtered()" />
+</div>

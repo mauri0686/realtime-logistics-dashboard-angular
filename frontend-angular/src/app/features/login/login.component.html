@@ -1,0 +1,47 @@
+<div class="login-wrap">
+  <form class="panel card" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="brand">
+      <div class="logo">⬢</div>
+      <div>
+        <h1>ShipTrack <span>Ops</span></h1>
+        <p>Realtime logistics control tower</p>
+      </div>
+    </div>
+
+    <label for="username">Operator</label>
+    <input
+      id="username"
+      type="text"
+      formControlName="username"
+      placeholder="e.g. ops-lead"
+      autocomplete="username"
+      [class.invalid]="hasError('username')"
+    />
+    @if (hasError('username')) {
+      <span class="hint">Username is required (min 2 chars).</span>
+    }
+
+    <label for="password">Passphrase</label>
+    <input
+      id="password"
+      type="password"
+      formControlName="password"
+      placeholder="any passphrase (demo)"
+      autocomplete="current-password"
+      [class.invalid]="hasError('password')"
+    />
+    @if (hasError('password')) {
+      <span class="hint">Password is required (min 3 chars).</span>
+    }
+
+    @if (error(); as message) {
+      <div class="error">{{ message }}</div>
+    }
+
+    <button type="submit" [disabled]="submitting()">
+      {{ submitting() ? 'Signing in…' : 'Enter control tower' }}
+    </button>
+
+    <p class="note">Demo auth — any non-empty credentials are accepted.</p>
+  </form>
+</div>
