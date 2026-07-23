@@ -5,7 +5,7 @@ A full‑stack, real‑time operations dashboard: a **.NET 8** backend streams l
 smooth by rendering only what's visible.
 
 > Sister project: the same backend with a **React 19** front‑end →
-> [`realtime-logistics-dashboard-react`](../../../realtime-logistics-dashboard-react)
+> [`realtime-logistics-dashboard-react`](https://github.com/mauri0686/realtime-logistics-dashboard-react)
 
 ![Dashboard](docs/screenshot-dashboard.png)
 
