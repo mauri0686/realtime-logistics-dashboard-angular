@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  signal,
   Component,
   OnDestroy,
   OnInit,
@@ -45,6 +46,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   readonly username = this.auth.username;
   readonly status = this.feed.status;
   readonly updatesPerSec = this.feed.updatesPerSec;
+
+  // First-visit onboarding: a dismissible banner + "how it works" modal, so any visitor
+  // understands WHAT they are looking at and WHY it is technically interesting.
+  readonly introVisible = signal(localStorage.getItem('shiptrack.intro') !== 'seen');
+  readonly aboutOpen = signal(false);
 
   readonly searchControl: FormControl<string> = this.fb.control('');
   readonly statusControl: FormControl<StatusFilter> = this.fb.control<StatusFilter>('All');
@@ -103,6 +109,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // Explicit teardown: leaving the dashboard closes the socket — nothing keeps streaming
     // into a page that no longer exists.
     void this.feed.disconnect();
+  }
+
+  dismissIntro(): void {
+    localStorage.setItem('shiptrack.intro', 'seen');
+    this.introVisible.set(false);
+  }
+
+  openAbout(): void {
+    this.aboutOpen.set(true);
+  }
+
+  closeAbout(): void {
+    this.aboutOpen.set(false);
   }
 
   logout(): void {

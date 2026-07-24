@@ -16,9 +16,27 @@
 
     <div class="user">
       <span>{{ username() }}</span>
+      <button type="button" class="about-btn" (click)="openAbout()" aria-label="How this works">
+        How it works
+      </button>
       <button type="button" (click)="logout()">Sign out</button>
     </div>
   </header>
+
+  @if (introVisible()) {
+    <div class="intro panel">
+      <p>
+        👋 You're watching <b>5,000 simulated shipments</b> update in real time —
+        <b>~350 rows/second</b> pushed over a live stream. Only the rows on screen exist in the
+        DOM (<b>virtual scroll</b>), which is why it stays this smooth. Try the search, or sort
+        the chaos with the status filter.
+      </p>
+      <div class="intro-actions">
+        <button type="button" class="ghost" (click)="openAbout()">How it works</button>
+        <button type="button" class="solid" (click)="dismissIntro()">Got it</button>
+      </div>
+    </div>
+  }
 
   <app-kpi-cards [kpis]="kpis()" />
 
@@ -40,3 +58,28 @@
 
   <app-shipments-table class="panel table-host" [shipments]="filtered()" />
 </div>
+
+@if (aboutOpen()) {
+  <div class="overlay" (click)="closeAbout()">
+    <div class="modal panel" (click)="$event.stopPropagation()" role="dialog" aria-label="How this works">
+      <h2>How this works</h2>
+      <ul>
+        <li><b>What it is</b> — an operations dashboard for a fictional parcel carrier: every
+          shipment in the network, live, in one screen.</li>
+        <li><b>Real-time</b> — the server pushes only the rows that changed (~350/sec) over a
+          WebSocket; the UI merges deltas into an immutable snapshot. In this online demo the
+          simulation runs in your browser; cloning the repo runs the real .NET 8 + SignalR backend.</li>
+        <li><b>Why it stays fast</b> — virtualization keeps ~30 of 5,000 rows in the DOM, rows are
+          immutable so unchanged ones never re-render, and search input is debounced.</li>
+        <li><b>Auth</b> — JWT login, HTTP interceptor and protected routes; credentials come
+          pre-filled here so you land one click away.</li>
+      </ul>
+      <div class="modal-actions">
+        <a href="https://github.com/mauri0686/realtime-logistics-dashboard-angular" target="_blank" rel="noopener">
+          View the code on GitHub →
+        </a>
+        <button type="button" class="solid" (click)="closeAbout()">Close</button>
+      </div>
+    </div>
+  </div>
+}
