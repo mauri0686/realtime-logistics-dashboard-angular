@@ -55,6 +55,21 @@ export interface FleetKpis {
       }
     }
 
+    @media (max-width: 760px) {
+      .kpis {
+        gap: 8px;
+      }
+      .kpi {
+        padding: 10px 12px;
+      }
+      .kpi .value {
+        font-size: 20px;
+      }
+      .kpi:first-child {
+        grid-column: 1 / -1;
+      }
+    }
+
     .kpi {
       padding: 16px 18px;
       display: flex;

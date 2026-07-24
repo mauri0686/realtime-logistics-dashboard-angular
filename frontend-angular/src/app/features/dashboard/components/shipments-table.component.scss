@@ -88,3 +88,27 @@
     color: var(--text-2);
   }
 }
+
+/* Mobile: keep tracking #, status, route, progress — hide customer/carrier/weight/ETA */
+@media (max-width: 760px) {
+  .row {
+    grid-template-columns: 88px 92px 1.2fr 92px;
+    gap: 8px;
+    padding: 0 10px;
+
+    > span:nth-child(4),
+    > span:nth-child(5),
+    > span:nth-child(6),
+    > span:nth-child(7) {
+      display: none;
+    }
+  }
+
+  .route .arrow {
+    margin: 0 2px;
+  }
+
+  .progress .pct {
+    display: none;
+  }
+}

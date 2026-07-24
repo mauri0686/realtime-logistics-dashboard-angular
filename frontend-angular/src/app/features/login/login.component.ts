@@ -3,6 +3,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
+import { isDemoMode } from '../../core/demo/demo-mode';
 import { AuthService } from '../../core/services/auth.service';
 
 /**
@@ -25,9 +26,11 @@ export class LoginComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
+  // In demo mode the credentials come pre-filled: a recruiter/client lands one click away
+  // from the dashboard, while the full auth flow (validation → JWT → guard) still runs.
   readonly form = this.fb.group({
-    username: ['', [Validators.required, Validators.minLength(2)]],
-    password: ['', [Validators.required, Validators.minLength(3)]],
+    username: [isDemoMode() ? 'ops-lead' : '', [Validators.required, Validators.minLength(2)]],
+    password: [isDemoMode() ? 'demo123' : '', [Validators.required, Validators.minLength(3)]],
   });
 
   readonly submitting = signal(false);

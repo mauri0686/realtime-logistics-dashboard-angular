@@ -160,3 +160,43 @@
   min-height: 0;
   overflow: hidden;
 }
+
+/* ---------- Mobile (≤760px) ---------- */
+
+@media (max-width: 760px) {
+  .page {
+    padding: 10px 10px 14px;
+    gap: 10px;
+  }
+
+  .topbar {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 14px;
+
+    .brand p {
+      display: none;
+    }
+
+    .user span {
+      display: none;
+    }
+
+    .live .label {
+      display: none;
+    }
+  }
+
+  .toolbar {
+    flex-wrap: wrap;
+    padding: 10px 12px;
+
+    input[type='search'] {
+      flex-basis: 100%;
+    }
+
+    .count {
+      margin-left: auto;
+    }
+  }
+}
