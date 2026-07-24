@@ -7,6 +7,8 @@ import {
 } from '@microsoft/signalr';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { DemoShipmentGenerator } from '../demo/demo-data';
+import { isDemoMode } from '../demo/demo-mode';
 import { Shipment } from '../models/shipment.model';
 import { AuthService } from './auth.service';
 
@@ -29,6 +31,8 @@ export class ShipmentsService {
 
   private readonly byId = new Map<string, Shipment>();
   private hub: HubConnection | null = null;
+  private demo: DemoShipmentGenerator | null = null;
+  private demoTimer?: ReturnType<typeof setInterval>;
 
   private readonly _shipments = signal<Shipment[]>([]);
   private readonly _status = signal<StreamStatus>('idle');
@@ -44,7 +48,21 @@ export class ShipmentsService {
 
   /** Loads the REST snapshot, then opens the live stream. Idempotent. */
   async connect(): Promise<void> {
-    if (this.hub) return;
+    if (this.hub || this.demo) return;
+
+    // Demo mode (GitHub Pages / ?demo=1): identical UI, but the simulation that normally lives
+    // in the .NET backend runs right here in the browser — zero infrastructure needed.
+    if (isDemoMode()) {
+      this._status.set('connecting');
+      this.demo = new DemoShipmentGenerator(5000);
+      this.replaceAll(this.demo.snapshot());
+      this.demoTimer = setInterval(() => {
+        if (this.demo) this.applyUpdates(this.demo.tick());
+      }, 1000);
+      this.startRateMeter();
+      this._status.set('live');
+      return;
+    }
 
     this._status.set('connecting');
     try {
@@ -62,6 +80,9 @@ export class ShipmentsService {
   async disconnect(): Promise<void> {
     if (this.rateTimer) clearInterval(this.rateTimer);
     this.rateTimer = undefined;
+    if (this.demoTimer) clearInterval(this.demoTimer);
+    this.demoTimer = undefined;
+    this.demo = null;
     if (this.hub) {
       const hub = this.hub;
       this.hub = null;

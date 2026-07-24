@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { isDemoMode } from '../demo/demo-mode';
 import { LoginRequest, LoginResponse } from '../models/auth.model';
 
 const TOKEN_KEY = 'shiptrack.token';
@@ -28,6 +29,17 @@ export class AuthService {
   }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
+    // Demo mode (GitHub Pages): no backend, so issue a local demo session. The guard,
+    // interceptor and the rest of the auth flow behave exactly as they do against the real API.
+    if (isDemoMode()) {
+      const demo: LoginResponse = {
+        token: 'demo-session',
+        username: credentials.username,
+        expiresAt: new Date(Date.now() + 8 * 3600_000).toISOString(),
+      };
+      return of(demo).pipe(tap((res) => this.setSession(res)));
+    }
+
     return this.http
       .post<LoginResponse>(`${environment.apiBaseUrl}/api/auth/login`, credentials)
       .pipe(tap((res) => this.setSession(res)));
